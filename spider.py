@@ -1,8 +1,20 @@
 # -*- coding: utf-8 -*-
 
+'''
+准备：
+1、安装 chrome 插件小乐图客 https://chrome.google.com/webstore/detail/zzllrr-imager-geek/gfjhimhkjmipphnaminnnnjpnlneeplk
+
+开始：
+1、使用 www.weibo.com 的搜索功能，搜索 #猫# ，切换到图片选项，此时可以看见一张张猫的图片的缩略图, 下拉搜索结果，直到数量足够，500张。
+2、单击插件图标，'添加任务'，'获取网址'，将所有的网址复制到'cat.txt'
+3、将代码中的 key 变量改为所需要的类型名。
+4、运行代码
+'''
+
 import urllib
 import os
 import shutil,time,random
+
 
 """
 # 保存单一帖子中所有的图片，从1开始编号
