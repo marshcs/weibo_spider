@@ -11,7 +11,7 @@
 4、运行代码
 '''
 
-import urllib
+from urllib import request
 import os
 import shutil,time,random
 
@@ -28,9 +28,10 @@ def download_image(all_pic_urls,folder_name):
         if n % 20 == 0:
             sleeptime=random.randint(0,30) / 20
             time.sleep(sleeptime)
+            print('{:d} image downloaded'.format(n))
         n+=1
         file_name= str(n)+'.jpg'
-        urllib.request.urlretrieve(pic_url,folder_name+'\\'+file_name)
+        request.urlretrieve(pic_url,folder_name+'\\'+file_name)
 
 
 # 需要修改的部分
@@ -39,10 +40,13 @@ key = 'cat'
 pic_size = "large"
 #
 
+if not os.path.exists('.\\pic'):
+    os.mkdir('.\\pic')
 folder_name = '.\\pic\\{}'.format(key)
 if os.path.exists(folder_name):
     shutil.rmtree(folder_name)
-os.mkdir(folder_name)    
+os.mkdir(folder_name)
+
 txt_new = []
 with open('{}.txt'.format(key),'r') as f:
     text = f.readlines()
