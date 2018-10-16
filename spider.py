@@ -31,28 +31,41 @@ def download_image(all_pic_urls,folder_name):
             print('{:d} image downloaded'.format(n))
         n+=1
         file_name= str(n)+'.jpg'
-        request.urlretrieve(pic_url,folder_name+'\\'+file_name)
+        request.urlretrieve(pic_url,folder_name+'/'+file_name)
+        
+
+def create_folder(folder_name_list):
+    for folder_name in folder_name_list:
+        if not os.path.exists('./{}'.format(folder_name)):
+            os.mkdir('./{}'.format(folder_name))
 
 
 # 需要修改的部分
-key = 'cat'
+key = 'sky'
+new_filename = 'sky2'
 # 下载图片的尺寸   large:原图   mw600:中图   thumb180: 缩略图
 pic_size = "large"
 #
 
-if not os.path.exists('.\\pic'):
-    os.mkdir('.\\pic')
-folder_name = '.\\pic\\{}'.format(key)
-if os.path.exists(folder_name):
-    shutil.rmtree(folder_name)
-os.mkdir(folder_name)
+folder_name     = './pic/{}'.format(key)
+lib_file_name   = './lib/{}.txt'.format(key)
 
-txt_new = []
-with open('{}.txt'.format(key),'r') as f:
-    text = f.readlines()
-    for txt in text:
-        if txt.startswith(r'https://wx'):
-            txt_new.append(txt.replace("thumb180",pic_size))
+create_folder(['pic','lib','new',folder_name])
+
+
+with open('./new/'+new_filename+'.txt','r') as f, open(lib_file_name,'a+') as f_lib:
+    new_url_list = f.readlines()
+    f_lib.seek(0)
+    lib_list = f_lib.readlines()
+    url_new = []
+    for url in new_url_list:
+        if url.startswith(r'https://wx') & (url not in lib_list):
+#            txt_new.append(txt.replace("thumb180",pic_size))
+            url_new.append(url)
             
-print('total number of picture is {:d}'.format(len(txt_new)))
-download_image(txt_new,folder_name)
+with open(lib_file_name,'a') as f_lib:
+    f_lib.writelines(url_new)
+
+            
+print('total number of picture is {:d}'.format(len(lib_list) + len(url_new)))
+#download_image(txt_new,folder_name)
