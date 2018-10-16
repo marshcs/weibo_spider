@@ -32,7 +32,13 @@ def download_image(all_pic_urls,folder_name):
         file_name= str(n)+'.jpg'
         urllib.request.urlretrieve(pic_url,folder_name+'\\'+file_name)
 
+
+# 需要修改的部分
 key = 'cat'
+# 下载图片的尺寸   large:原图   mw600:中图   thumb180: 缩略图
+pic_size = "large"
+#
+
 folder_name = '.\\pic\\{}'.format(key)
 if os.path.exists(folder_name):
     shutil.rmtree(folder_name)
@@ -42,6 +48,7 @@ with open('{}.txt'.format(key),'r') as f:
     text = f.readlines()
     for txt in text:
         if txt.startswith(r'https://wx'):
-            txt_new.append(txt.replace("thumb180","mw600"))
-
+            txt_new.append(txt.replace("thumb180",pic_size))
+            
+print('total number of picture is {:d}'.format(len(txt_new)))
 download_image(txt_new,folder_name)
