@@ -12,6 +12,7 @@
 '''
 
 from urllib import request
+import requests
 import os
 import shutil,time,random
 
@@ -22,8 +23,8 @@ import shutil,time,random
         all_pic_urls  list    单一帖子所有图片链接
         folder_name   string  存储文件夹名（帖子名）    
 """    
-def download_image(all_pic_urls,folder_name):
-    n = 0
+def download_image(all_pic_urls,folder_name,start=0,end = None):
+    n = start
     for pic_url in all_pic_urls:
         if n % 20 == 0:
             sleeptime=random.randint(0,30) / 20
@@ -33,6 +34,24 @@ def download_image(all_pic_urls,folder_name):
         file_name= str(n)+'.jpg'
         request.urlretrieve(pic_url,folder_name+'/'+file_name)
         
+def download_image_req(all_pic_urls,folder_name, pic_size = 'large', start=0, end=None):
+    n = start
+    for pic_url in all_pic_urls:
+        n+=1
+        file_name= str(n)+'.jpg'
+        full_file_name = folder_name + './' + file_name
+        if os.path.isfile(full_file_name):
+            print('{}.jpg exists'.format(n))
+        else:
+            if n % 20 == 0:
+                sleeptime=random.randint(0,30) / 20
+                time.sleep(sleeptime)
+            r=requests.get(pic_url,stream = True, timeout = 3)
+            if r.status_code == 200:
+                print('{:d} image downloaded'.format(n))
+                with open(full_file_name, 'wb') as f:
+                    for chunk in r.iter_content(256):
+                        f.write(chunk)
 
 def create_folder(folder_name_list):
     for folder_name in folder_name_list:
@@ -44,14 +63,12 @@ def create_folder(folder_name_list):
 key = 'sky'
 new_filename = 'sky2'
 # 下载图片的尺寸   large:原图   mw600:中图   thumb180: 缩略图
-pic_size = "large"
+pic_size = "mw600"
 #
 
 folder_name     = './pic/{}'.format(key)
 lib_file_name   = './lib/{}.txt'.format(key)
-
 create_folder(['pic','lib','new',folder_name])
-
 
 with open('./new/'+new_filename+'.txt','r') as f, open(lib_file_name,'a+') as f_lib:
     new_url_list = f.readlines()
@@ -62,10 +79,12 @@ with open('./new/'+new_filename+'.txt','r') as f, open(lib_file_name,'a+') as f_
         if url.startswith(r'https://wx') & (url not in lib_list):
 #            txt_new.append(txt.replace("thumb180",pic_size))
             url_new.append(url)
-            
+lib_list.extend(url_new)
 with open(lib_file_name,'a') as f_lib:
     f_lib.writelines(url_new)
 
-            
-print('total number of picture is {:d}'.format(len(lib_list) + len(url_new)))
-#download_image(txt_new,folder_name)
+dwn_lib_list = [url.replace("thumb180",pic_size) for url in lib_list]
+print('total number of picture is {:d}'.format(len(lib_list)))
+
+
+download_image_req(dwn_lib_list,folder_name,pic_size = pic_size)
