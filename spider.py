@@ -84,7 +84,5 @@ with open(lib_file_name,'a') as f_lib:
     f_lib.writelines(url_new)
 
 dwn_lib_list = [url.replace("thumb180",pic_size) for url in lib_list]
-print('total number of picture is {:d}'.format(len(lib_list)))
-
-
+input('total number of picture is {:d}, press any key to start downloading, or Ctrl+C to stop'.format(len(lib_list)))
 download_image_req(dwn_lib_list,folder_name,pic_size = pic_size)
